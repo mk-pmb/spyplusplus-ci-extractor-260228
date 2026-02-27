@@ -1,0 +1,21 @@
+{ "name": "spyplusplus-ci-extractor-260228",
+  "version": "0.0.0",
+  "description": "Uses GitHub CI to extract the Windows debugging tool spy++.exe from Microsoft Visual Studio.",
+  "keywords": [],
+
+  "author": "M.K. (https://github.com/mk-pmb)",
+  "homepage": "https://github.com/mk-pmb/spyplusplus-ci-extractor-260228/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/spyplusplus-ci-extractor-260228.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/spyplusplus-ci-extractor-260228/issues"
+  },
+  "contributors": [],
+
+  "private": true, "license": "ISC",
+
+
+  "engines": { "npm": ">=7.0.0" }
+}
