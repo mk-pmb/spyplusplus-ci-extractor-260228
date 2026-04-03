@@ -40,6 +40,19 @@ Microsoft, please provide better, environmentally-friendly download strategies!
   [spypp-mslearn]: https://learn.microsoft.com/en-us/visualstudio/debugger/introducing-spy-increment?view=visualstudio
 
 
+⚠ Why the preinstalled version is marked as "TAINTED" ⚠
+-------------------------------------------------------
+
+GitHub's `windows-latest` image contains a pre-installed version of Spy++.
+Independent of whether it may or may not be binary identical to the community
+edition that Microsoft offers as a free download, to my understanding of the
+license (I'm not a lawyer) that is not an officially permissible way to obtain
+a copy for personal use (in the sense of actually running it).
+It's exposed only for diagnostic purposes, like verifying that the actual
+extractors will obtain different files.
+
+
+
 
 
 

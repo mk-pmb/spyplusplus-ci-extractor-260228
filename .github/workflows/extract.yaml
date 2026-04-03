@@ -1,0 +1,52 @@
+%YAML 1.1
+# ^-- ATTN: [2019-12-31] If you use a later version, Github will fail
+#   with a bogus error message "You have an error in your yaml syntax".
+# -*- coding: UTF-8, tab-width: 2 -*-
+---
+
+name: 'Extract Spy++'
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+  push:
+    branches: '*'
+
+jobs:
+  preinstalled_tainted:
+    name: 'Identify the pre-installed (license-wise tainted) files'
+    runs-on: windows-latest
+    steps:
+      - name: "Copy the Spy++ files that ship in GitHub's CI image"
+        shell: bash
+        run: |
+          exec &> >(tee --append -- "$GITHUB_STEP_SUMMARY")
+          echo '```text'
+
+          FILES=(
+            /c/Windows/System32/{dbghelp,msvcp140,vcruntime140}.dll
+            '/c/Program Files/Microsoft Visual Studio'/*/*/*/Tools/spy*
+            )
+          du --apparent-size --bytes "${FILES[@]}"
+          echo
+
+          cp -nt . -- "${FILES[@]}"
+          FILES=( "${FILES[@]##*/}" )
+
+          for ALGO in md5 sha:{1,256,512}; do
+            ( echo "# ${ALGO//:/} checksums:"
+              "${ALGO//:/}"sum --binary -- "${FILES[@]}"
+              echo
+            ) | tee --append -- "cksums.${ALGO%%:*}"
+          done
+
+          echo '```'
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: spypp_preinstalled_TAINTED
+          path: .
+
+
+
+
+...
