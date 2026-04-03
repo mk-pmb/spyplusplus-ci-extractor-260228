@@ -48,5 +48,58 @@ jobs:
 
 
 
+  via_winget:
+    runs-on: windows-latest
+    env:
+      WINGET_MSSTORE_REGION: DE
+      OUT_DIR: '${{ github.workspace }}\output'
+      VS_BASEDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: 'Install Visual Studio Build Tools'
+        shell: bash
+        run: |
+          # .\Start-StepSummaryTee.ps1
+          mkdir -- output
+          exec &> >(tee -- "$GITHUB_STEP_SUMMARY" output/stepsumm.log)
+          echo '```text'
+          PKG='Microsoft.VisualStudio.2022.BuildTools'
+          VCT=(
+            --quiet --wait --norestart
+            --log '.\output\vsinstaller.log.txt'
+            # --dry-run
+
+            # Custom destination to hopefully make it independent from
+            # the pre-installed Visual Studio in GitHub's VM image:
+            --layout '.\output\vs-dbg'
+
+            --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+            )
+          LOG_SED='
+            # Do not clutter CI output with progress spinner animation:
+            /^[\x00- \/\|\\-]*$/d
+            '
+          ( winget.exe install --exact --id "$PKG" \
+            --verbose --disable-interactivity \
+            --accept-package-agreements --accept-source-agreements \
+            --override "${VCT[*]}" || echo "E: winget failed, rv=$?"
+          ) |& tr '\r' '\n' | sed -re "$LOG_SED" | uniq
+          echo
+          echo 'Files in output:'
+          ls -Al output
+          echo "Step took $SECONDS sec."
+          echo '```'
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: spypp_via_winget
+          path: output/
+
+
+
+
+
+
 
 ...
